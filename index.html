@@ -47,6 +47,10 @@ footer{text-align:center;padding:20px;border-top:1px solid #00f7ff}
 <input id="username" type="text" placeholder="Minecraft Username" required>
 <input id="discord" type="text" placeholder="Discord ID" required>
 <input id="email" type="email" placeholder="Email" required>
+<label style="display:flex;gap:10px;align-items:center;margin-top:10px;">
+<input id="agree" type="checkbox" required>
+<span>I agree to the official tournament rules.</span>
+</label>
 <button class="btn">Register</button>
 </form>
 </section>
@@ -81,6 +85,23 @@ footer{text-align:center;padding:20px;border-top:1px solid #00f7ff}
 </div>
 </section>
 
+<!-- RULES -->
+<section id="rules">
+<h2>🔥 ROWDY SMP – OFFICIAL PVP TOURNAMENT RULES 🔥</h2>
+<div class="card">
+<ul>
+<li>No hacks / clients / auto clicker.</li>
+<li>No crystal PVP (if you want sword only).</li>
+<li>Only provided kit allowed.</li>
+<li>No toxicity or abuse in chat.</li>
+<li>If you disconnect, you get 1 minute to rejoin.</li>
+<li>Referee decision is final.</li>
+</ul>
+<p><b>Breaking rules = instant disqualification.</b></p>
+<p>Good luck warriors ⚔️🔥</p>
+</div>
+</section>
+
 <footer>
 <p>© 2026 Rowdy SMP</p>
 </footer>
@@ -90,13 +111,17 @@ const WEBHOOK_URL="https://discord.com/api/webhooks/1474433227199610934/jMIxZAg_
 
 // CHANGE THESE
 const ADMIN_USERNAME="rowdy";
-const ADMIN_PASSWORD="ROWDY$1947";
+const ADMIN_PASSWORD="1234";
 
 function goRegister(){
  document.getElementById('register').scrollIntoView({behavior:'smooth'});
 }
 
 function savePlayer(e){
+ if(!document.getElementById('agree').checked){
+  alert('You must agree to the rules before registering.');
+  return;
+ }
  e.preventDefault();
 
  let player={
@@ -162,4 +187,5 @@ function clearData(){
 
 </body>
 </html>
+
 
