@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Rowdy SMP</title>
+
+<style>
+body {margin:0;font-family:Arial,sans-serif;background:radial-gradient(circle at top,#020617,#000);color:white}
+header{padding:20px;text-align:center;background:#020617;border-bottom:2px solid #00f7ff}
+header h1{color:#00f7ff;font-size:2.7rem}
+nav a{margin:0 12px;text-decoration:none;color:white;font-weight:bold}
+.hero{text-align:center;padding:90px 20px}
+.hero h2{font-size:3rem;color:#00f7ff;text-shadow:0 0 20px #00f7ff}
+.btn{padding:12px 25px;background:#00f7ff;border:none;border-radius:10px;font-weight:bold;cursor:pointer}
+section{padding:60px 20px;max-width:1100px;margin:auto}
+input{width:100%;padding:12px;margin:10px 0;border-radius:6px;border:none}
+.card{border:1px solid #00f7ff;padding:20px;border-radius:12px;background:rgba(0,247,255,0.08);box-shadow:0 0 20px rgba(0,247,255,0.3)}
+.table{width:100%;border-collapse:collapse}
+.table th,.table td{border:1px solid #00f7ff;padding:10px}
+footer{text-align:center;padding:20px;border-top:1px solid #00f7ff}
+.hidden{display:none}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>ROWDY SMP</h1>
+<nav>
+<a href="#home">Home</a>
+<a href="#register">Tournament</a>
+<a href="#adminLogin">Admin</a>
+</nav>
+</header>
+
+<section class="hero" id="home">
+<h2>Ultimate Neon PvP Experience</h2>
+<p>Join tournaments and dominate the battlefield.</p>
+<button class="btn" onclick="goRegister()">Join Tournament</button>
+</section>
+
+<!-- REGISTRATION -->
+<section id="register">
+<h2>PvP Tournament Registration</h2>
+<form onsubmit="savePlayer(event)">
+<input id="username" type="text" placeholder="Minecraft Username" required>
+<input id="discord" type="text" placeholder="Discord ID" required>
+<input id="email" type="email" placeholder="Email" required>
+<button class="btn">Register</button>
+</form>
+</section>
+
+<!-- ADMIN LOGIN -->
+<section id="adminLogin">
+<h2>Admin Login</h2>
+<div class="card">
+<input id="adminUser" placeholder="Admin Username">
+<input id="adminPass" type="password" placeholder="Password">
+<button class="btn" onclick="adminLogin()">Login</button>
+</div>
+</section>
+
+<!-- ADMIN DASHBOARD -->
+<section id="admin" class="hidden">
+<h2>Admin Dashboard</h2>
+<div class="card">
+<table class="table">
+<thead>
+<tr>
+<th>Username</th>
+<th>Discord</th>
+<th>Email</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody id="playerList"></tbody>
+</table>
+<button class="btn" onclick="clearData()">Clear All</button>
+<button class="btn" onclick="logout()">Logout</button>
+</div>
+</section>
+
+<footer>
+<p>© 2026 Rowdy SMP</p>
+</footer>
+
+<script>
+const WEBHOOK_URL="https://discord.com/api/webhooks/1474433227199610934/jMIxZAg_0bE3r62baqNYe7kDmMYU6bt4sJtXp-ICIQQ9nr4f0rQoknQ-M3H3nyAlUXG-";
+
+// CHANGE THESE
+const ADMIN_USERNAME="rowdy";
+const ADMIN_PASSWORD="ROWDY$1947";
+
+function goRegister(){
+ document.getElementById('register').scrollIntoView({behavior:'smooth'});
+}
+
+function savePlayer(e){
+ e.preventDefault();
+
+ let player={
+  username:username.value,
+  discord:discord.value,
+  email:email.value
+ };
+
+ let players=JSON.parse(localStorage.getItem('players')||"[]");
+ players.push(player);
+ localStorage.setItem('players',JSON.stringify(players));
+
+ fetch(WEBHOOK_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({content:`🔥 NEW REGISTRATION 🔥\nUsername: ${player.username}\nDiscord: ${player.discord}\nEmail: ${player.email}`})});
+
+ alert("Registered!");
+ loadPlayers();
+ e.target.reset();
+}
+
+function adminLogin(){
+ let u=adminUser.value;
+ let p=adminPass.value;
+
+ if(u===ADMIN_USERNAME && p===ADMIN_PASSWORD){
+  document.getElementById('admin').classList.remove('hidden');
+  document.getElementById('adminLogin').classList.add('hidden');
+  loadPlayers();
+ }else alert("Wrong admin login");
+}
+
+function logout(){
+ document.getElementById('admin').classList.add('hidden');
+ document.getElementById('adminLogin').classList.remove('hidden');
+}
+
+function loadPlayers(){
+ let players=JSON.parse(localStorage.getItem('players')||"[]");
+ let list=document.getElementById('playerList');
+ list.innerHTML="";
+
+ players.forEach((p,i)=>{
+  list.innerHTML+=`<tr>
+  <td>${p.username}</td>
+  <td>${p.discord}</td>
+  <td>${p.email}</td>
+  <td><button onclick="deletePlayer(${i})">Delete</button></td>
+  </tr>`;
+ });
+}
+
+function deletePlayer(i){
+ let players=JSON.parse(localStorage.getItem('players'));
+ players.splice(i,1);
+ localStorage.setItem('players',JSON.stringify(players));
+ loadPlayers();
+}
+
+function clearData(){
+ localStorage.removeItem('players');
+ loadPlayers();
+}
+</script>
+
+</body>
+</html>
+
